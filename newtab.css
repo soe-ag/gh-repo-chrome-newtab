@@ -1,0 +1,293 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #0d1117;
+  color: #c9d1d9;
+  min-height: 100vh;
+}
+
+/* ── Layout ─────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+
+.header {
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  padding: 12px 24px;
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.github-logo {
+  width: 28px;
+  height: 28px;
+  fill: #e6edf3;
+  flex-shrink: 0;
+}
+
+.settings-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #8b949e;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.settings-link:hover {
+  color: #e6edf3;
+  border-color: #8b949e;
+}
+
+.settings-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Main ────────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ── Status / Error banner ───────────────────────────── */
+
+.status {
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.status.info {
+  background: #161b22;
+  border: 1px solid #30363d;
+  color: #8b949e;
+}
+
+.status.error {
+  background: #1f0d0d;
+  border: 1px solid #f85149;
+  color: #ffa198;
+}
+
+.status a {
+  color: #58a6ff;
+  text-decoration: underline;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ── Repo grid ───────────────────────────────────────── */
+
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .repo-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 860px) {
+  .repo-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 620px) {
+  .repo-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 400px) {
+  .repo-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Repo card ───────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 1px #58a6ff33;
+  transform: translateY(-2px);
+}
+
+.card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #58a6ff;
+  word-break: break-word;
+  margin-bottom: 8px;
+}
+
+.card-desc {
+  font-size: 0.8rem;
+  color: #8b949e;
+  flex: 1;
+  line-height: 1.4;
+  word-break: break-word;
+  margin-bottom: 12px;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.75rem;
+  color: #8b949e;
+  margin-top: auto;
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-meta-item svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.card-lang-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f1e05a;
+  flex-shrink: 0;
+}
+
+.card-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-weight: 500;
+  margin-bottom: 8px;
+  align-self: flex-start;
+}
+
+.card-badge.private {
+  border-color: #6e7681;
+  color: #6e7681;
+}
+
+/* ── See more button ─────────────────────────────────── */
+
+.see-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.see-more-btn {
+  background: #21262d;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 8px 24px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.see-more-btn:hover {
+  background: #30363d;
+  border-color: #8b949e;
+  color: #e6edf3;
+}
+
+/* ── Loading skeleton ────────────────────────────────── */
+
+.skeleton {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, #21262d 50%, transparent 100%);
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: #21262d;
+  margin-bottom: 10px;
+}
+
+.skeleton-line:first-child {
+  width: 60%;
+  height: 14px;
+}
+
+.skeleton-line:nth-child(2) {
+  width: 90%;
+}
+
+.skeleton-line:last-child {
+  width: 40%;
+  margin-bottom: 0;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
