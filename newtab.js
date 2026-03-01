@@ -97,32 +97,51 @@
     card.rel = "noopener noreferrer";
     card.title = repo.full_name;
 
-    const langColor = repo.language ? (LANG_COLORS[repo.language] || "#8b949e") : null;
+    const badge = document.createElement("span");
+    badge.className = "card-badge";
+    if (repo.private) badge.classList.add("private");
+    badge.textContent = repo.private ? "Private" : "Public";
+    card.appendChild(badge);
 
-    card.innerHTML = `
-      <span class="card-badge ${repo.private ? "private" : ""}">${repo.private ? "Private" : "Public"}</span>
-      <span class="card-name">${escapeHtml(repo.name)}</span>
-      <span class="card-desc">${repo.description ? escapeHtml(repo.description) : ""}</span>
-      <div class="card-meta">
-        ${repo.language ? `
-          <span class="card-meta-item">
-            <span class="card-lang-dot" style="background:${langColor}"></span>
-            ${escapeHtml(repo.language)}
-          </span>` : ""}
-        <span class="card-meta-item">${starIcon()} ${repo.stargazers_count}</span>
-        <span class="card-meta-item">${forkIcon()} ${repo.forks_count}</span>
-      </div>`;
+    const nameEl = document.createElement("span");
+    nameEl.className = "card-name";
+    nameEl.textContent = repo.name;
+    card.appendChild(nameEl);
 
+    const descEl = document.createElement("span");
+    descEl.className = "card-desc";
+    descEl.textContent = repo.description || "";
+    card.appendChild(descEl);
+
+    const meta = document.createElement("div");
+    meta.className = "card-meta";
+
+    if (repo.language) {
+      const langColor = LANG_COLORS[repo.language] || "#8b949e";
+      const langItem = document.createElement("span");
+      langItem.className = "card-meta-item";
+      const dot = document.createElement("span");
+      dot.className = "card-lang-dot";
+      dot.style.background = langColor;
+      langItem.appendChild(dot);
+      langItem.appendChild(document.createTextNode(repo.language));
+      meta.appendChild(langItem);
+    }
+
+    const starItem = document.createElement("span");
+    starItem.className = "card-meta-item";
+    starItem.innerHTML = starIcon();
+    starItem.appendChild(document.createTextNode(` ${repo.stargazers_count}`));
+    meta.appendChild(starItem);
+
+    const forkItem = document.createElement("span");
+    forkItem.className = "card-meta-item";
+    forkItem.innerHTML = forkIcon();
+    forkItem.appendChild(document.createTextNode(` ${repo.forks_count}`));
+    meta.appendChild(forkItem);
+
+    card.appendChild(meta);
     return card;
-  }
-
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
   }
 
   function renderRepos() {
@@ -162,8 +181,25 @@
           throw err;
         }
         if (res.status === 403) {
-          const err = new Error("rate");
-          err.parts = ["API rate limit exceeded. Add a token in ", settingsLink, " for higher limits."];
+          let apiMessage = "";
+          try {
+            const body = await res.clone().json();
+            if (body && typeof body.message === "string") apiMessage = body.message.toLowerCase();
+          } catch { /* ignore parse errors */ }
+
+          const rateLimitRemaining = res.headers.get("x-ratelimit-remaining");
+          const isRateLimit = rateLimitRemaining === "0" || apiMessage.includes("rate limit");
+
+          const err = new Error("forbidden");
+          if (isRateLimit) {
+            err.parts = ["API rate limit exceeded. Add a token in ", settingsLink, " for higher limits."];
+          } else if (apiMessage.includes("sso") || apiMessage.includes("single sign-on")) {
+            err.parts = ["Access is restricted by GitHub SSO. Authorize your token for this organization, then update it in ", settingsLink, "."];
+          } else if (apiMessage.includes("permission") || apiMessage.includes("insufficient") || apiMessage.includes("access")) {
+            err.parts = ["Your token does not have sufficient permissions. Check token scopes and update it in ", settingsLink, "."];
+          } else {
+            err.parts = ["GitHub returned 403 Forbidden. Check your token and permissions in ", settingsLink, "."];
+          }
           throw err;
         }
         if (res.status === 404) {
@@ -187,7 +223,10 @@
   /* ── Main ─────────────────────────────────────────────── */
 
   async function init() {
-    const { githubUsername, githubToken } = await chrome.storage.sync.get(["githubUsername", "githubToken"]);
+    const [{ githubUsername }, { githubToken }] = await Promise.all([
+      chrome.storage.sync.get("githubUsername"),
+      chrome.storage.local.get("githubToken"),
+    ]);
 
     if (!githubUsername && !githubToken) {
       showStatus(

@@ -14,7 +14,10 @@
   }
 
   // Load saved values
-  chrome.storage.sync.get(["githubUsername", "githubToken"], ({ githubUsername, githubToken }) => {
+  Promise.all([
+    chrome.storage.sync.get("githubUsername"),
+    chrome.storage.local.get("githubToken"),
+  ]).then(([{ githubUsername }, { githubToken }]) => {
     if (githubUsername) usernameInput.value = githubUsername;
     if (githubToken) tokenInput.value = githubToken;
   });
@@ -33,7 +36,10 @@
     }
 
     try {
-      await chrome.storage.sync.set({ githubUsername: username, githubToken: token });
+      await Promise.all([
+        chrome.storage.sync.set({ githubUsername: username }),
+        chrome.storage.local.set({ githubToken: token }),
+      ]);
       showMsg("Settings saved! Reload the new tab to see your repositories.", "success");
     } catch {
       showMsg("Failed to save settings. Please try again.", "error");
