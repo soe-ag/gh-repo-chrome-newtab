@@ -42,13 +42,52 @@
       </div>
     </header>
 
+    <!-- ── Bookmark bar ─────────────────────────────────── -->
+    <div class="bookmark-bar" id="bookmark-bar">
+      <div class="bookmark-bar-inner">
+        <div class="bookmark-list" id="bookmark-list"></div>
+        <button class="bookmark-add-btn" id="bookmark-add-btn" title="Add bookmark">
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 010 1.5H8.5v4.25a.75.75 0 01-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"/></svg>
+          Add
+        </button>
+      </div>
+    </div>
+
     <main class="main">
+      <!-- ── Search box ──────────────────────────────────── -->
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zM11.5 7a4.499 4.499 0 11-8.997 0A4.499 4.499 0 0111.5 7z"/>
+        </svg>
+        <input type="search" id="search-input" class="search-input" placeholder="Search repositories…" autocomplete="off" spellcheck="false" />
+      </div>
+
       <div id="status" class="status hidden"></div>
       <div id="repo-grid" class="repo-grid"></div>
       <div id="see-more-wrap" class="see-more-wrap hidden">
         <button id="see-more-btn" class="see-more-btn">See More</button>
       </div>
     </main>
+  </div>
+
+  <!-- ── Bookmark modal ──────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="bookmark-modal">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h3 class="modal-title" id="modal-title">Add Bookmark</h3>
+      <div class="modal-field">
+        <label for="bm-url">URL</label>
+        <input type="url" id="bm-url" placeholder="https://example.com" autocomplete="off" />
+      </div>
+      <div class="modal-field">
+        <label for="bm-title">Title</label>
+        <input type="text" id="bm-title" placeholder="My Website" autocomplete="off" />
+      </div>
+      <p class="modal-error hidden" id="bm-error"></p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-cancel" id="bm-cancel">Cancel</button>
+        <button class="modal-btn modal-save" id="bm-save">Save</button>
+      </div>
+    </div>
   </div>
 
   <script src="newtab.js"></script>
