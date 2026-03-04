@@ -55,11 +55,21 @@
 
     <main class="main">
       <!-- ── Search box ──────────────────────────────────── -->
-      <div class="search-wrap">
-        <svg class="search-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-          <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zM11.5 7a4.499 4.499 0 11-8.997 0A4.499 4.499 0 0111.5 7z"/>
-        </svg>
-        <input type="search" id="search-input" class="search-input" placeholder="Search repositories…" autocomplete="off" spellcheck="false" />
+      <div class="search-sort-wrap">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zM11.5 7a4.499 4.499 0 11-8.997 0A4.499 4.499 0 0111.5 7z"/>
+          </svg>
+          <input type="search" id="search-input" class="search-input" placeholder="Search repositories…" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="sort-wrap">
+          <label for="sort-select" class="sort-label">Sort:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="default">Default</option>
+            <option value="pushed">Last Pushed</option>
+            <option value="name">Name</option>
+          </select>
+        </div>
       </div>
 
       <div id="status" class="status hidden"></div>

@@ -178,6 +178,16 @@ body {
   color: #f85149;
 }
 
+.bookmark-card.dragging {
+  opacity: 0.5;
+}
+
+.bookmark-card.drag-over {
+  border-color: #58a6ff;
+  background: #2d333b;
+  box-shadow: 0 0 0 2px #58a6ff44;
+}
+
 .bookmark-add-btn {
   display: flex;
   align-items: center;
@@ -306,14 +316,25 @@ body {
   background: #2ea043;
 }
 
+/* ── Search + Sort row ──────────────────────────────────── */
+
+.search-sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
 /* ── Search box ─────────────────────────────────────── */
 
 .search-wrap {
   display: flex;
   align-items: center;
   position: relative;
+  flex: 1;
+  min-width: 200px;
   max-width: 480px;
-  margin-bottom: 20px;
 }
 
 .search-icon {
@@ -344,6 +365,38 @@ body {
 
 .search-input::placeholder {
   color: #6e7681;
+}
+
+/* ── Sort control ────────────────────────────────────── */
+
+.sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.sort-label {
+  font-size: 0.8rem;
+  color: #8b949e;
+  white-space: nowrap;
+}
+
+.sort-select {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  color: #c9d1d9;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.sort-select:focus,
+.sort-select:hover {
+  border-color: #58a6ff;
 }
 
 /* ── Main ────────────────────────────────────────────── */
