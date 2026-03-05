@@ -8,6 +8,7 @@
   const seeMoreWrap = document.getElementById("see-more-wrap");
   const seeMoreBtn = document.getElementById("see-more-btn");
   const searchInput = document.getElementById("search-input");
+  const sortSelect = document.getElementById("sort-select");
 
   // Bookmark elements
   const bookmarkList = document.getElementById("bookmark-list");
@@ -22,6 +23,7 @@
   let allRepos = [];
   let visibleCount = INITIAL_VISIBLE;
   let searchQuery = "";
+  let sortOrder = "default"; // "default" | "pushed" | "name"
   let bookmarks = []; // [{url, title}]
   let pinnedRepos = new Set(); // Set of repo.id (number)
 
@@ -116,8 +118,6 @@
     const card = document.createElement("a");
     card.className = "card" + (isPinned ? " is-pinned" : "");
     card.href = repo.html_url;
-    card.target = "_blank";
-    card.rel = "noopener noreferrer";
     card.title = repo.full_name;
 
     // Pin button
@@ -188,11 +188,19 @@
         (r.description && r.description.toLowerCase().includes(q))
       );
     }
-    // Pinned repos appear first
+    // Pinned repos appear first; within each group apply the selected sort
     return result.slice().sort((a, b) => {
       const aPin = pinnedRepos.has(a.id) ? 0 : 1;
       const bPin = pinnedRepos.has(b.id) ? 0 : 1;
-      return aPin - bPin;
+      if (aPin !== bPin) return aPin - bPin;
+      if (sortOrder === "name") {
+        return a.name.localeCompare(b.name);
+      }
+      if (sortOrder === "pushed") {
+        return new Date(b.pushed_at) - new Date(a.pushed_at);
+      }
+      // default: keep original order (API returns by updated desc)
+      return 0;
     });
   }
 
@@ -238,13 +246,44 @@
 
   function renderBookmarks() {
     bookmarkList.innerHTML = "";
-    bookmarks.forEach(bm => {
+    let dragSrcIdx = -1;
+
+    bookmarks.forEach((bm, idx) => {
       const card = document.createElement("a");
       card.className = "bookmark-card";
       card.href = bm.url;
-      card.target = "_blank";
-      card.rel = "noopener noreferrer";
       card.title = bm.title || bm.url;
+      card.draggable = true;
+
+      // Drag-and-drop handlers
+      card.addEventListener("dragstart", e => {
+        dragSrcIdx = idx;
+        e.dataTransfer.setData("text/plain", String(idx));
+        e.dataTransfer.effectAllowed = "move";
+        card.classList.add("dragging");
+      });
+      card.addEventListener("dragend", () => {
+        dragSrcIdx = -1;
+        card.classList.remove("dragging");
+      });
+      card.addEventListener("dragover", e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        if (dragSrcIdx !== idx) card.classList.add("drag-over");
+      });
+      card.addEventListener("dragleave", () => {
+        card.classList.remove("drag-over");
+      });
+      card.addEventListener("drop", async e => {
+        e.preventDefault();
+        card.classList.remove("drag-over");
+        const srcIdx = Number(e.dataTransfer.getData("text/plain"));
+        if (isNaN(srcIdx) || srcIdx === idx) return;
+        const moved = bookmarks.splice(srcIdx, 1)[0];
+        bookmarks.splice(idx, 0, moved);
+        await chrome.storage.sync.set({ bookmarks });
+        renderBookmarks();
+      });
 
       const favUrl = faviconUrl(bm.url);
       if (favUrl) {
@@ -457,6 +496,12 @@
 
   searchInput.addEventListener("input", () => {
     searchQuery = searchInput.value.trim();
+    visibleCount = INITIAL_VISIBLE;
+    renderRepos();
+  });
+
+  sortSelect.addEventListener("change", () => {
+    sortOrder = sortSelect.value;
     visibleCount = INITIAL_VISIBLE;
     renderRepos();
   });
