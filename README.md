@@ -8,8 +8,12 @@ A Chrome extension that replaces your new tab page with a dashboard of your GitH
 
 - **5 cards per row** responsive grid (scales down on smaller screens)
 - **10 repos shown** on load; click **See More** to reveal more
-- Each card opens the repository in a new tab
+- Each card navigates to the repository in the current tab
 - Shows repo name, description, visibility badge, language, ⭐ stars and forks
+- **Search** repos by name or description in real time
+- **Sort** repos by default (last updated), last pushed, or name
+- **Pin** any repo to the top of the grid with one click
+- **Bookmark bar** — add up to 10 custom links with favicon icons; drag and drop to reorder or click × to remove
 - Supports **private repos** via a Personal Access Token
 - Skeleton loading animation and friendly error messages
 
